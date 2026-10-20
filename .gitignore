@@ -1,0 +1,25 @@
+# Spring Boot / Gradle
+.gradle/
+**/build/
+**/bin/
+*.class
+*.log
+
+# VS Code
+.vscode/
+
+# MySQL / Environment
+.env
+.env.*
+!.env.example
+application-local.yaml
+application-local.yml
+application-local.properties
+
+# Frontend
+node_modules/
+dist/
+
+# OS
+.DS_Store
+Thumbs.db
