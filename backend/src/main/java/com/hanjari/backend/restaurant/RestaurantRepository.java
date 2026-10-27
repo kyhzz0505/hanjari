@@ -1,6 +1,7 @@
 package com.hanjari.backend.restaurant;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -8,6 +9,9 @@ import org.springframework.data.repository.query.Param;
 
 // restaurants 테이블을 조회하는 창구
 public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
+
+    // SELECT * FROM restaurants WHERE id = ? AND status = ?
+    Optional<Restaurant> findByIdAndStatus(Long id, RestaurantStatus status);
 
     // 검색 규칙 (CLAUDE.md): 영업 중 AND 지역 일치 AND
     // "인원이 들어가는 좌석(room=true면 룸)"이 하나라도 있는 식당

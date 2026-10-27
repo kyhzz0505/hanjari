@@ -40,15 +40,47 @@ public class RestaurantService {
         return restaurants.stream()
                 .map(restaurant -> {
                     List<Seating> seatings = seatingsByRestaurant.getOrDefault(restaurant.getId(), List.of());
-                    Integer maxGroupCapacity = seatings.stream()
-                            .map(Seating::getMaxCapacity)
-                            .max(Integer::compare)
-                            .orElse(null);
-                    boolean hasRoom = seatings.stream()
-                            .anyMatch(seating -> seating.getSeatingType() == SeatingType.ROOM);
                     return RestaurantSummaryResponse.of(
-                            restaurant, maxGroupCapacity, hasRoom, mainImageUrlByRestaurant.get(restaurant.getId()));
+                            restaurant,
+                            maxGroupCapacity(seatings),
+                            hasRoom(seatings),
+                            mainImageUrlByRestaurant.get(restaurant.getId()));
                 })
                 .toList();
+    }
+
+    public RestaurantDetailResponse getRestaurant(Long id) {
+        // 영업 중이 아니면(폐업·비공개) 없는 식당과 똑같이 404
+        Restaurant restaurant = restaurantRepository.findByIdAndStatus(id, RestaurantStatus.OPEN)
+                .orElseThrow(RestaurantNotFoundException::new);
+        List<Seating> seatings = seatingRepository.findByRestaurantIdOrderByIdAsc(id);
+        List<RestaurantImage> images = restaurantImageRepository.findByRestaurantIdOrderBySortOrderAscIdAsc(id);
+
+        return new RestaurantDetailResponse(
+                restaurant.getId(),
+                restaurant.getName(),
+                restaurant.getDistrict(),
+                restaurant.getAddress(),
+                restaurant.getCategory(),
+                restaurant.getPhone(),
+                restaurant.getBusinessHours(),
+                maxGroupCapacity(seatings),
+                hasRoom(seatings),
+                restaurant.getLastVerifiedAt(),
+                seatings.stream().map(RestaurantDetailResponse.SeatingResponse::from).toList(),
+                images.stream().map(RestaurantDetailResponse.ImageResponse::from).toList());
+    }
+
+    // 한 그룹이 함께 앉을 수 있는 최대 인원 = 좌석 중 가장 큰 max_capacity (좌석이 없으면 null)
+    private static Integer maxGroupCapacity(List<Seating> seatings) {
+        return seatings.stream()
+                .map(Seating::getMaxCapacity)
+                .max(Integer::compare)
+                .orElse(null);
+    }
+
+    private static boolean hasRoom(List<Seating> seatings) {
+        return seatings.stream()
+                .anyMatch(seating -> seating.getSeatingType() == SeatingType.ROOM);
     }
 }
