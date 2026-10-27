@@ -3,6 +3,7 @@ package com.hanjari.backend.restaurant;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,5 +26,11 @@ public class RestaurantController {
             @RequestParam(name = "people", required = false) Integer people,
             @RequestParam(name = "room", defaultValue = "false") boolean room) {
         return restaurantService.searchRestaurants(district, people, room);
+    }
+
+    // GET /api/restaurants/1 → 식당 상세. 없거나 영업 중이 아니면 404
+    @GetMapping("/{id}")
+    public RestaurantDetailResponse getRestaurant(@PathVariable("id") Long id) {
+        return restaurantService.getRestaurant(id);
     }
 }
