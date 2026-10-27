@@ -19,8 +19,10 @@ public class RestaurantService {
     private final SeatingRepository seatingRepository;
     private final RestaurantImageRepository restaurantImageRepository;
 
-    public List<RestaurantSummaryResponse> findOpenRestaurants() {
-        List<Restaurant> restaurants = restaurantRepository.findByStatusOrderByIdAsc(RestaurantStatus.OPEN);
+    public List<RestaurantSummaryResponse> searchRestaurants(String district, Integer people, boolean room) {
+        // "district=" 처럼 값 없이 오면 지역 조건 없음으로 처리
+        String districtOrNull = (district == null || district.isBlank()) ? null : district.trim();
+        List<Restaurant> restaurants = restaurantRepository.search(districtOrNull, people, room);
         List<Long> ids = restaurants.stream().map(Restaurant::getId).toList();
 
         // 식당이 몇 곳이든 좌석·사진은 쿼리 한 번씩만 실행하고, 식당 id별로 묶는다
