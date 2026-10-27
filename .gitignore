@@ -23,3 +23,6 @@ dist/
 # OS
 .DS_Store
 Thumbs.db
+
+# Claude 작업 파일
+Claude outputs/
