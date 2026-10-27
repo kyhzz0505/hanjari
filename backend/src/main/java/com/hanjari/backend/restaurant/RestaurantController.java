@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
@@ -16,9 +17,13 @@ public class RestaurantController {
 
     private final RestaurantService restaurantService;
 
-    // GET /api/restaurants
+    // GET /api/restaurants?district=마포구&people=8&room=true (파라미터는 모두 생략 가능)
+    // name을 꼭 적는다: VS Code(F5) 빌드는 파라미터 이름 정보를 남기지 않아 생략하면 500 오류가 난다
     @GetMapping
-    public List<RestaurantSummaryResponse> getRestaurants() {
-        return restaurantService.findOpenRestaurants();
+    public List<RestaurantSummaryResponse> getRestaurants(
+            @RequestParam(name = "district", required = false) String district,
+            @RequestParam(name = "people", required = false) Integer people,
+            @RequestParam(name = "room", defaultValue = "false") boolean room) {
+        return restaurantService.searchRestaurants(district, people, room);
     }
 }
