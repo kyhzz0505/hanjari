@@ -5,5 +5,6 @@ public enum ImageType {
     TABLE,
     CONNECTED,
     ROOM,
-    INTERIOR // 내부 전경
+    INTERIOR, // 내부 전경
+    EXTERIOR  // 외관·야외석
 }
