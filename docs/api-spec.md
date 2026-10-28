@@ -16,9 +16,13 @@
 
 | 필드 | 가능한 값 |
 |---|---|
-| `district` | `마포구`, `서대문구` |
+| `district` | `마포구` |
 | `seatingType` | `TABLE`(일반 테이블), `CONNECTED`(연결 단체석), `ROOM`(룸) |
-| `imageType` | `TABLE`, `CONNECTED`, `ROOM`, `INTERIOR`(내부 전경) |
+| `imageType` | `TABLE`, `CONNECTED`, `ROOM`, `INTERIOR`(내부 전경), `EXTERIOR`(외관·야외석) |
+
+### 사진 주소
+`mainImageUrl`, `imageUrl`은 `/images/restaurants/1/connected-1.jpg` 같은 경로입니다.
+사진 파일은 백엔드가 제공하므로, 화면에서는 앞에 백엔드 주소를 붙입니다: `http://localhost:8080` + `imageUrl`
 
 ---
 
@@ -150,3 +154,4 @@ API가 완성되면 `fetch` 주소만 `http://localhost:8080/api/...` 로 바꿉
 | 버전 | 날짜 | 내용 |
 |---|---|---|
 | v0.1 | 2026-10-26 | 최초 작성 (목록·검색, 상세, AI 검색) |
+| v0.2 | 2026-10-28 | 지역을 마포구만으로 변경, `imageType`에 `EXTERIOR` 추가, 사진 주소 규칙 추가 |

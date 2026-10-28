@@ -76,7 +76,7 @@ CREATE TABLE restaurant_images (
     restaurant_id  BIGINT       NOT NULL,
     seating_id     BIGINT       NULL,
     image_url      VARCHAR(500) NOT NULL,                -- 예: /images/restaurants/1/room-a.jpg
-    image_type     VARCHAR(20)  NOT NULL,                -- TABLE / CONNECTED / ROOM / INTERIOR
+    image_type     VARCHAR(20)  NOT NULL,                -- TABLE / CONNECTED / ROOM / INTERIOR / EXTERIOR
     caption        VARCHAR(100) NULL,                    -- 사진 설명
     sort_order     INT          NOT NULL DEFAULT 0,
     uploaded_at    DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
