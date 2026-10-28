@@ -60,7 +60,7 @@ GET /api/restaurants?district=마포구&people=8&room=true
 
 | 필드 | 설명 |
 |---|---|
-| `maxGroupCapacity` | 이 식당에서 한 그룹이 함께 앉을 수 있는 최대 인원 |
+| `maxGroupCapacity` | 이 식당에서 한 그룹이 함께 앉을 수 있는 최대 인원. 좌석 정보가 없으면 `null` ("좌석 정보 없음"으로 표시) |
 | `hasRoom` | 룸 보유 여부 |
 | `mainImageUrl` | 대표 사진 경로. 사진이 없으면 `null` |
 
@@ -172,3 +172,4 @@ API가 완성되면 `fetch` 주소만 `http://localhost:8080/api/...` 로 바꿉
 | v0.2 | 2026-10-28 | 지역을 마포구만으로 변경, `imageType`에 `EXTERIOR` 추가, 사진 주소 규칙 추가 |
 | v0.3 | 2026-10-28 | AI 검색 구현: 결과 없음·지역 밖 안내 문장, 200자 제한, 응답 시간 안내 |
 | v0.4 | 2026-10-28 | 목록·검색: `people`가 1 미만이면 400 |
+| v0.5 | 2026-10-28 | `maxGroupCapacity`: 좌석 정보가 없으면 `null` 명시 |
