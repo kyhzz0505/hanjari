@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>검색 결과 — 한자리</title>
+  <link rel="stylesheet" href="style.css?v=notice-fade-4">
+  <link rel="stylesheet" href="results.css?v=1">
+  <script src="shared.js?v=results-1" defer></script>
+  <script src="results.js?v=1" defer></script>
+</head>
+<body class="result-screen">
+  <header class="header">
+    <div class="header-inner">
+      <a class="brand" href="index.html" aria-label="한자리 홈"><img src="assets/hanjari-brand.png" alt="한자리"></a>
+      <nav aria-label="주 메뉴">
+        <a href="index.html">자리 찾기</a>
+        <a href="index.html?mode=ai">모임별 추천</a>
+        <button type="button" data-notice="저장한 곳 기능은 준비 중이에요.">저장한 곳</button>
+        <button type="button" class="login" data-notice="로그인 기능은 준비 중이에요. 로그인 없이 식당을 검색할 수 있어요.">로그인</button>
+      </nav>
+    </div>
+  </header>
+  <main class="container result-page">
+    <section class="result-intro" aria-labelledby="result-title">
+      <h1 id="result-title">함께 앉을 수 있는 자리를 찾고 있어요</h1>
+      <div class="condition-bar"><div id="condition-chips" class="condition-chips"></div><a id="edit-conditions" class="edit-conditions" href="index.html">조건 바꾸기</a></div>
+      <p id="ai-explanation" class="ai-explanation" hidden></p>
+    </section>
+    <div class="result-layout">
+      <aside class="filter-panel" aria-label="자리 형태 필터">
+        <form id="filter-form">
+          <fieldset><legend>자리 형태</legend>
+            <label><input type="checkbox" name="seating" value="ROOM">룸</label>
+            <label><input type="checkbox" name="seating" value="TABLE">일반 테이블</label>
+            <label><input type="checkbox" name="seating" value="CONNECTED">연결 단체석</label>
+            <label class="unavailable"><input type="checkbox" disabled>좌식 <small>준비 중</small></label>
+            <label class="unavailable"><input type="checkbox" disabled>전체 대관 <small>준비 중</small></label>
+          </fieldset>
+          <button class="apply-filter" type="submit">필터 적용</button>
+          <button class="reset-filter" id="reset-filter" type="button">필터 초기화</button>
+        </form>
+      </aside>
+      <section class="result-content" aria-label="식당 검색 결과">
+        <div class="sort-bar" aria-label="정렬 방식">
+          <button type="button" data-sort="default" aria-pressed="true">기본순</button>
+          <button type="button" data-notice="거리 정보가 없어 가까운 순 정렬은 아직 제공하지 않아요.">가까운 순</button>
+          <button type="button" data-sort="capacity" aria-pressed="false">넓은 자리 순</button>
+          <span id="result-count" aria-live="polite"></span>
+        </div>
+        <div id="result-state" class="result-state" role="status"><span class="loading-dot" aria-hidden="true"></span>식당과 좌석 정보를 확인하고 있어요.</div>
+        <button type="button" id="retry" class="retry" hidden>다시 시도</button>
+        <div id="restaurant-list" class="restaurant-list" aria-busy="true"></div>
+      </section>
+    </div>
+  </main>
+  <dialog id="detail-dialog" aria-labelledby="detail-title"><button id="close-detail" class="close" aria-label="상세 닫기">×</button><div id="detail-content"></div></dialog>
+  <div id="notifications" aria-label="안내 메시지"><div id="toast" class="toast" role="status" hidden></div></div>
+  <p id="status" class="status" role="status" aria-live="polite"></p>
+</body>
+</html>
