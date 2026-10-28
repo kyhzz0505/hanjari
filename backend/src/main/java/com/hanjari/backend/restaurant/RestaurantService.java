@@ -7,6 +7,8 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.hanjari.backend.common.BadRequestException;
+
 import lombok.RequiredArgsConstructor;
 
 // 식당 관련 비즈니스 규칙을 담는 곳 (예: "영업 중인 식당만 보여 준다")
@@ -20,6 +22,9 @@ public class RestaurantService {
     private final RestaurantImageRepository restaurantImageRepository;
 
     public List<RestaurantSummaryResponse> searchRestaurants(String district, Integer people, boolean room) {
+        if (people != null && people < 1) {
+            throw new BadRequestException("인원은 1명 이상이어야 합니다.");
+        }
         // "district=" 처럼 값 없이 오면 지역 조건 없음으로 처리
         String districtOrNull = (district == null || district.isBlank()) ? null : district.trim();
         List<Restaurant> restaurants = restaurantRepository.search(districtOrNull, people, room);
