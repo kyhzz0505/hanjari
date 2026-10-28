@@ -11,3 +11,11 @@ spring:
     hibernate:
       ddl-auto: validate
     show-sql: true
+
+# Gemini (AI 자연어 검색). 키는 루트 .env의 GEMINI_API_KEY에서 읽는다
+gemini:
+  api-key: ${GEMINI_API_KEY:}
+  model: ${GEMINI_MODEL:gemini-3.5-flash-lite}
+  timeout-seconds: 20
+  # 생각 수준(low 등). 비워 두면 모델 기본값. Lite 모델은 지원하지 않을 수 있다
+  thinking-level: ${GEMINI_THINKING_LEVEL:}

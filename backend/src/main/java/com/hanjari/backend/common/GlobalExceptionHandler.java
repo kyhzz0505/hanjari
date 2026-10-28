@@ -25,6 +25,13 @@ public class GlobalExceptionHandler {
         return new ErrorResponse(e.getMessage());
     }
 
+    // 요청 값이 잘못된 경우 (예: AI 검색 문장이 비어 있음)
+    @ExceptionHandler(BadRequestException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleBadRequest(BadRequestException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
     // 숫자 자리에 글자가 온 경우 (예: /api/restaurants/abc, ?people=abc)
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
