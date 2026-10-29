@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="실제 좌석 정보와 사진으로 찾는 단체 모임 식당, 한자리.">
+  <title>한자리 — 우리 모임이 함께 앉을 곳</title>
+  <link rel="stylesheet" href="style.css?v=search-notice-3">
+  <script src="script.js?v=search-notice-3" defer></script>
+</head>
+<body>
+  <svg class="icon-library" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <symbol id="search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="7.5"/><path d="m16 16 5 5"/></symbol>
+    <symbol id="spark" viewBox="0 0 24 24"><path d="M12 3c0 6-3 9-9 9 6 0 9 3 9 9 0-6 3-9 9-9-6 0-9-3-9-9ZM4 2v4M2 4h4M20 18v4M18 20h4"/></symbol>
+    <symbol id="pin" viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.8"/></symbol>
+    <symbol id="person" viewBox="0 0 24 24"><circle cx="12" cy="6" r="4"/><path d="M3 22v-3a9 7 0 0 1 18 0v3Z"/></symbol>
+    <symbol id="bookmark" viewBox="0 0 24 24"><path d="M5 3h14v19l-7-5-7 5Z"/></symbol>
+    <symbol id="arrow" viewBox="0 0 24 24"><path d="M3 12h17m-7-7 7 7-7 7"/></symbol>
+  </svg>
+  <header class="header">
+    <div class="header-inner">
+      <a class="brand" href="index.html" aria-label="한자리 홈"><img src="assets/hanjari-brand.png" alt="한자리"></a>
+      <nav aria-label="주 메뉴">
+        <a href="#search-panel">자리 찾기</a>
+        <button type="button" id="nav-ai">모임별 추천</button>
+        <button type="button" data-notice="저장한 곳 기능은 준비 중이에요.">저장한 곳</button>
+        <button type="button" class="login" data-notice="로그인 기능은 준비 중이에요. 로그인 없이 식당을 검색할 수 있어요.">로그인</button>
+      </nav>
+    </div>
+  </header>
+  <main class="container">
+    <section class="hero" aria-labelledby="headline">
+      <p class="eyebrow">모임 자리 찾기</p>
+      <h1 id="headline">몇 명이 모여도<br>한자리에 앉을 수 있게</h1>
+      <p class="subtitle">지역과 인원만 알려주세요. 함께 앉을 수 있는 자리를 찾아드릴게요.</p>
+    </section>
+    <section class="search-panel" id="search-panel" aria-label="식당 검색">
+      <div class="tabs" role="tablist" aria-label="검색 방법">
+        <button class="tab" id="condition-tab" type="button" role="tab" aria-selected="true" aria-controls="condition-panel"><svg class="icon"><use href="#search"/></svg>조건으로 찾기</button>
+        <button class="tab" id="ai-tab" type="button" role="tab" aria-selected="false" aria-controls="ai-panel" tabindex="-1"><svg class="icon"><use href="#spark"/></svg>AI에게 물어보기</button>
+      </div>
+      <div id="condition-panel" role="tabpanel" aria-labelledby="condition-tab">
+        <form id="condition-form" class="search-form">
+          <div class="dropdown" data-dropdown="district">
+            <input type="hidden" id="district" name="district" value="마포구">
+            <button type="button" class="field dropdown-trigger" role="combobox" aria-expanded="false" aria-haspopup="listbox" aria-controls="district-options" aria-labelledby="district-label district-value">
+              <svg class="icon"><use href="#pin"/></svg><span class="field-body"><span class="field-label" id="district-label">지역</span><span class="selected-value" id="district-value">마포구</span></span><span class="chevron" aria-hidden="true"></span>
+            </button>
+            <div class="dropdown-menu" hidden><p class="dropdown-caption">현재 마포구 식당을 안내해요</p><ul id="district-options" role="listbox" aria-label="지역 선택"></ul></div>
+          </div>
+          <div class="dropdown" data-dropdown="people">
+            <input type="hidden" id="people" name="people" value="8">
+            <button type="button" class="field dropdown-trigger" role="combobox" aria-expanded="false" aria-haspopup="listbox" aria-controls="people-options" aria-labelledby="people-label people-value">
+              <svg class="icon"><use href="#person"/></svg><span class="field-body"><span class="field-label" id="people-label">인원</span><span class="selected-value" id="people-value">8명</span></span><span class="chevron" aria-hidden="true"></span>
+            </button>
+            <div class="dropdown-menu" hidden><p class="dropdown-caption">함께할 인원을 선택해 주세요</p><ul id="people-options" role="listbox" aria-label="방문 인원 선택, 1명부터 20명"></ul></div>
+          </div>
+          <label class="field room-field"><svg class="icon"><use href="#bookmark"/></svg><span>룸 필요</span><input id="room" type="checkbox" role="switch" checked><span class="switch" aria-hidden="true"></span></label>
+          <button class="submit" type="submit"><span>식당 찾기</span><svg class="icon"><use href="#arrow"/></svg></button>
+        </form>
+      </div>
+      <div id="ai-panel" role="tabpanel" aria-labelledby="ai-tab" hidden>
+        <form id="ai-form" class="ai-form">
+          <label class="ai-input"><span class="field-label">어떤 모임을 준비하고 계세요?</span><input id="query" name="query" required maxlength="200" placeholder="홍대에서 10명 회식할 건데 룸이면 좋겠어" autocomplete="off"></label>
+          <button class="submit" type="submit"><span>AI로 찾기</span><svg class="icon"><use href="#arrow"/></svg></button>
+        </form>
+        <p class="ai-hint">마포구 식당의 실제 좌석 정보를 바탕으로 안내해요. 최대 200자</p>
+      </div>
+    </section>
+    <section id="results" class="results" aria-labelledby="results-title" hidden>
+      <div class="results-heading"><h2 id="results-title">검색 결과</h2><span id="count"></span></div>
+      <p id="conditions"></p><p id="recommendation" hidden></p>
+      <div id="cards" class="cards"></div>
+    </section>
+  </main>
+  <dialog id="detail-dialog" aria-labelledby="detail-title"><button id="close-detail" class="close" aria-label="상세 닫기">×</button><div id="detail-content"></div></dialog>
+  <div id="notifications" aria-label="안내 메시지">
+    <div id="toast" class="toast" role="status" hidden></div>
+  </div>
+  <p id="status" class="status" role="status" aria-live="polite"></p>
+</body>
+</html>
