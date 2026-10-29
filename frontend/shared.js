@@ -30,7 +30,7 @@ function showSearchNotice(message) {
 async function request(path, options = {}) {
   const response = await fetch(API_BASE + path, options);
   const data = await response.json().catch(() => null);
-  if (!response.ok) throw new Error(data?.message || `요청을 처리하지 못했어요. (${response.status})`);
+  if (!response.ok) throw Object.assign(new Error(data?.message || `요청을 처리하지 못했어요. (${response.status})`), { status: response.status });
   if (data === null) throw new Error('서버 응답을 확인할 수 없어요. 다시 시도해 주세요.');
   return data;
 }
