@@ -48,9 +48,10 @@ function render() {
   if (sort === 'capacity') shown.sort((a, b) => (b.maxGroupCapacity ?? -1) - (a.maxGroupCapacity ?? -1));
   list.replaceChildren();
   const party = conditions.people === null ? '함께' : `${conditions.people}명이 함께`;
-  $('#result-title').textContent = `${party} 앉을 수 있는 자리 ${shown.length}곳을 찾았어요`;
+  $('#result-title').textContent = shown.length ? `${party} 앉을 수 있는 자리 ${shown.length}곳을 찾았어요` : '조건에 맞는 자리를 찾지 못했어요';
   $('#result-count').textContent = `총 ${shown.length}곳`;
-  $('#result-state').hidden = shown.length > 0;
+  // AI 안내 문장이 이미 보이면 같은 뜻의 안내를 한 번 더 보여 주지 않습니다.
+  $('#result-state').hidden = shown.length > 0 || !$('#ai-explanation').hidden;
   $('#result-state').textContent = shown.length ? '' : '조건에 맞는 식당이 없어요. 필터를 초기화하거나 검색 조건을 바꿔보세요.';
   shown.forEach(restaurant => {
     const row = node('article', undefined, 'restaurant-row');
@@ -84,6 +85,20 @@ function render() {
   updateChips();
   document.querySelectorAll('[data-sort]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.sort === sort)));
 }
+// AI 검색은 하루 사용 한도가 있어서, 같은 문장의 결과는 이 탭에 저장해 두고 새로고침할 때 다시 씁니다.
+// AI 설명을 받지 못한 결과(message가 null)는 저장하지 않아 다음에 다시 시도합니다.
+async function searchWithAi(query, signal) {
+  const key = 'ai-search:' + query;
+  try {
+    const saved = sessionStorage.getItem(key);
+    if (saved) return JSON.parse(saved);
+  } catch { /* 저장소를 쓸 수 없으면 서버에 요청합니다. */ }
+  const data = await request('/api/ai/search', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ query }), signal });
+  if (data.message) {
+    try { sessionStorage.setItem(key, JSON.stringify(data)); } catch { /* 저장하지 못해도 결과는 그대로 보여 줍니다. */ }
+  }
+  return data;
+}
 async function load() {
   controller?.abort();
   controller = new AbortController();
@@ -99,10 +114,10 @@ async function load() {
   $('#retry').hidden = true;
   document.querySelectorAll('#filter-form button').forEach(button => { button.disabled = true; });
   try {
-    if (conditions.people !== null && (!Number.isInteger(conditions.people) || conditions.people < 1)) throw new Error('인원은 1명 이상의 정수로 입력해 주세요.');
+    if (conditions.people !== null && (!Number.isInteger(conditions.people) || conditions.people < 1)) throw Object.assign(new Error('인원은 1명 이상의 정수로 입력해 주세요.'), { inputError: true });
     let summaries;
     if (aiQuery) {
-      const data = await request('/api/ai/search', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ query: aiQuery }), signal });
+      const data = await searchWithAi(aiQuery, signal);
       conditions = { ...data.conditions, people: data.conditions.people ?? null };
       appliedTypes = conditions.room ? ['ROOM'] : [];
       summaries = data.restaurants;
@@ -123,6 +138,14 @@ async function load() {
   } catch (error) {
     controller.abort();
     restaurants = [];
+    // 인원처럼 입력이 잘못된 경우(400 등)는 다시 시도해도 같으므로, 연결 안내 대신 조건을 바꾸도록 안내합니다.
+    const inputError = error.inputError || (error.status >= 400 && error.status < 500);
+    if (inputError) {
+      $('#result-title').textContent = '검색 조건을 확인해 주세요';
+      $('#result-state').textContent = `${error.message} 조건 바꾸기를 눌러 다시 검색해 주세요.`;
+      $('#retry').hidden = true;
+      return;
+    }
     $('#result-title').textContent = '검색 결과를 불러오지 못했어요';
     $('#result-state').textContent = '연결 상태를 확인한 뒤 다시 시도해 주세요.';
     $('#retry').hidden = false;
