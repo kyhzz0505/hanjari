@@ -28,9 +28,9 @@ INSERT INTO restaurants (id, name, district, address, category, phone, business_
 -- 좌석 구성 (사진과 연결하기 위해 id를 직접 지정)
 -- ---------------------------------------------------------------------
 INSERT INTO seating (id, restaurant_id, name, seating_type, min_capacity, max_capacity, quantity, description) VALUES
--- 공감 합정점: 큰 룸 1개 + 작은 룸 1개
+-- 공감 합정점: 큰 룸 1개 + 4인 룸 2개를 칸막이로 이은 연결 룸 2쌍 (4인 룸 단독은 넣지 않음)
 ( 1, 1, '단체룸',      'ROOM',      2, 11, 1, '좌식'),
-( 2, 1, '소형 룸',     'ROOM',      2,  6, 1, '좌식'),
+( 2, 1, '연결 룸',     'ROOM',      6,  8, 2, '4인 룸 2개, 나무 칸막이를 열어 사용'),
 -- 대나무 숙성회관: 오픈형 룸 2개
 ( 3, 2, '단체룸',      'ROOM',      5,  6, 2, '좌식, 오픈형 룸'),
 -- 도적: 6인 이상 단체는 2층으로 안내 (최대 40명, 통대관)
@@ -42,13 +42,15 @@ INSERT INTO seating (id, restaurant_id, name, seating_type, min_capacity, max_ca
 ( 7, 5, '연결 단체석', 'CONNECTED', 6,  8, 1, '4인 테이블 2개 연결'),
 -- 전통솥뚜껑삼겹살: 테이블을 붙여 최대 16명
 ( 8, 6, '연결 단체석', 'CONNECTED', 6, 16, 1, '4인 테이블 4개 + 2인 테이블 2개 연결'),
--- 중화복춘골드: 커튼으로 가릴 수 있는 일반 단체석
-( 9, 7, '단체석',      'TABLE',     5,  8, 2, '원형 테이블, 커튼으로 가릴 수 있음'),
+-- 중화복춘골드: 커튼으로 가릴 수 있는 원형 단체석 2개, 두 테이블을 합치면 최대 8명
+( 9, 7, '단체석',      'TABLE',     4,  6, 2, '원형 테이블, 커튼으로 가릴 수 있음'),
 -- 청기와타운: 단체룸, 6인 테이블 2개(연결 시 12명), 8인 테이블
-(10, 8, '단체룸',      'ROOM',      2,  6, 1, '좌식'),
-(11, 8, '6인 테이블',  'TABLE',     1,  6, 2, NULL),
-(12, 8, '연결 단체석', 'CONNECTED', 7, 12, 1, '6인 테이블 2개 연결'),
-(13, 8, '8인 테이블',  'TABLE',     6,  8, 1, NULL);
+(10, 8, '단체룸',      'ROOM',      5,  6, 1, '좌식'),
+(11, 8, '6인 테이블',  'TABLE',     5,  6, 2, NULL),
+(12, 8, '연결 단체석', 'CONNECTED', 6, 12, 1, '6인 테이블 2개 연결'),
+(13, 8, '8인 테이블',  'TABLE',     6,  8, 1, NULL),
+-- 중화복춘골드 추가 (기존 id를 바꾸지 않도록 마지막에 둠)
+(14, 7, '연결 단체석', 'CONNECTED', 6,  8, 1, '단체석 2개 연결, 커튼으로 가릴 수 있음');
 
 -- ---------------------------------------------------------------------
 -- 사진 (sort_order가 가장 작은 사진이 대표 사진)
@@ -56,8 +58,8 @@ INSERT INTO seating (id, restaurant_id, name, seating_type, min_capacity, max_ca
 -- ---------------------------------------------------------------------
 INSERT INTO restaurant_images (restaurant_id, seating_id, image_url, image_type, caption, sort_order) VALUES
 (1,    1, '/images/restaurants/1/room-1.jpg',      'ROOM',      '단체룸 (최대 11인)',          0),
-(1,    2, '/images/restaurants/1/room-2.jpg',      'ROOM',      '소형 룸 (최대 6인)',          1),
-(1,    2, '/images/restaurants/1/room-3.jpg',      'ROOM',      '소형 룸',                     2),
+(1,    2, '/images/restaurants/1/room-2.jpg',      'ROOM',      '연결 룸 (6~8인)',             1),
+(1,    2, '/images/restaurants/1/room-3.jpg',      'ROOM',      '4인 룸 (칸막이를 열면 8인)',  2),
 (1, NULL, '/images/restaurants/1/interior-1.jpg',  'INTERIOR',  '내부 전경',                   3),
 (1, NULL, '/images/restaurants/1/interior-2.jpg',  'INTERIOR',  '홀 좌석',                     4),
 (1, NULL, '/images/restaurants/1/interior-3.jpg',  'INTERIOR',  '창가 좌석',                   5),
