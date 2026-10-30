@@ -14,6 +14,9 @@
 - **AI 자연어 검색**: "홍대에서 10명 회식할 건데 룸이면 좋겠어"처럼 문장으로 검색하면,
   Google Gemini가 조건을 이해하고 **DB에 있는 식당과 좌석 정보만 근거로** 추천 설명을 씁니다.
   AI는 식당을 지어내지 않고, 어떤 식당이 나올지는 항상 DB 검색이 정합니다.
+- **모임별 추천**: 메인 화면에서 회식·동창회·가족 모임·생일에 맞는 자리 바로 보기
+
+지역은 현재 마포구만 안내합니다(다른 구는 "준비 중"). 로그인·단골 목록은 화면만 있고 준비 중입니다.
 
 ## 데이터
 
@@ -35,7 +38,7 @@
 ```
 hanjari/
 ├─ backend/     Spring Boot 서버 (API, 식당 사진 제공)
-├─ frontend/    화면 (HTML/CSS/JS)
+├─ frontend/    화면 (HTML/CSS/JS), backup/은 이전 버전 보관용
 ├─ database/    schema.sql(테이블), real_data.sql(실제 데이터), sample_data.sql(테스트용)
 └─ docs/        api-spec.md (API 명세)
 ```
@@ -72,7 +75,18 @@ VS Code에서 **F5** (`.vscode/launch.json`이 `.env`를 읽습니다).
 확인: http://localhost:8080/api/restaurants
 
 ### 4. 프론트엔드 실행
-VS Code **Live Server**로 `frontend/`를 엽니다 (http://127.0.0.1:5500).
+VS Code **Live Server**로 `frontend/`를 엽니다 (http://127.0.0.1:5500/frontend/index.html).
+VS Code 아래쪽 상태 표시줄의 **Go Live** 버튼을 누르거나, `frontend/index.html`을 오른쪽 클릭 → **Open with Live Server**.
+
+### 자주 생기는 문제
+
+| 증상 | 해결 |
+|---|---|
+| F5 실행 시 `UnsupportedClassVersionError` (class file version 69) | VS Code가 Java 25로 컴파일한 경우입니다. `Ctrl+Shift+P` → **Java: Configure Java Runtime**에서 backend 프로젝트를 JDK 21로 바꾸고, **Java: Clean Java Language Server Workspace** 실행 |
+| `Port 8080 was already in use` | 백엔드가 이미 다른 곳에서 실행 중입니다. 기존 서버를 끄고 다시 실행 |
+| Live Server가 안 켜짐 | 5500번 포트를 다른 프로그램(예: Oracle DB)이 쓰고 있을 수 있습니다. 그 프로그램을 끄고 다시 실행 |
+| DB를 다시 넣었는데 예전 데이터가 나옴 | Workbench에 예전에 연 SQL 탭이 남아 있으면 옛 내용이 실행됩니다. 탭을 닫고 파일을 다시 연 뒤 실행 |
+| AI 검색에 추천 설명이 안 나옴 | `.env`의 `GEMINI_API_KEY` 줄 앞에 공백이 없는지 확인. Gemini 무료 등급은 시간대에 따라 느려질 수 있습니다 |
 
 ## API
 
