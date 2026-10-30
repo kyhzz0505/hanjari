@@ -15,6 +15,7 @@ function createDropdown(name, choices) {
     option.id = `${name}-option-${index}`;
     option.setAttribute('role', 'option');
     option.setAttribute('aria-selected', String(choice.value === input.value));
+    if (choice.disabled) option.setAttribute('aria-disabled', 'true');
     option.textContent = choice.label;
     // 포인터 선택 시 combobox의 키보드 포커스를 유지합니다.
     option.addEventListener('pointerdown', event => event.preventDefault());
@@ -47,6 +48,11 @@ function createDropdown(name, choices) {
     highlight(choices.findIndex(choice => choice.value === input.value));
   }
   function choose(index) {
+    // 준비 중인 항목은 선택되지 않고 안내만 보여 줍니다.
+    if (choices[index].disabled) {
+      showNotice($('#toast'), choices[index].notice);
+      return;
+    }
     input.value = choices[index].value;
     valueLabel.textContent = choices[index].label;
     options.forEach((option, i) => option.setAttribute('aria-selected', String(i === index)));
@@ -76,9 +82,11 @@ function createDropdown(name, choices) {
 }
 
 const DISTRICTS = ['마포구', '서대문구', '용산구', '영등포구'];
+// 실제로 조사한 식당 데이터가 있는 지역. 나머지는 "준비 중"으로 보여 줍니다.
+const OPEN_DISTRICTS = ['마포구'];
 const MAX_PEOPLE = 50;
 const initial = new URLSearchParams(location.search);
-if (DISTRICTS.includes(initial.get('district'))) {
+if (OPEN_DISTRICTS.includes(initial.get('district'))) {
   $('#district').value = initial.get('district');
   $('#district-value').textContent = initial.get('district');
 }
@@ -90,7 +98,9 @@ if (Number.isInteger(initialPeople) && initialPeople >= 1 && initialPeople <= MA
 if (initial.has('room')) $('#room').checked = initial.get('room') === 'true';
 if (initial.has('query')) $('#query').value = initial.get('query').slice(0, 200);
 
-createDropdown('district', DISTRICTS.map(name => ({ value: name, label: name })));
+createDropdown('district', DISTRICTS.map(name => OPEN_DISTRICTS.includes(name)
+  ? { value: name, label: name }
+  : { value: name, label: `${name} (준비 중)`, disabled: true, notice: `${name} 식당은 준비 중이에요. 지금은 마포구 식당을 안내해요.` }));
 createDropdown('people', Array.from({ length: MAX_PEOPLE }, (_, i) => ({ value: String(i + 1), label: `${i + 1}명` })));
 document.addEventListener('pointerdown', event => {
   dropdowns.forEach(dropdown => { if (!dropdown.wrapper.contains(event.target)) dropdown.close(); });
