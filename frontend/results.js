@@ -64,8 +64,11 @@ function render() {
     const top = node('div', undefined, 'restaurant-top');
     const save = node('button', '♡', 'save-button');
     save.type = 'button';
-    save.setAttribute('aria-label', `${restaurant.name} 저장`);
-    save.addEventListener('click', () => showNotice($('#toast'), '저장한 곳 기능은 준비 중이에요.'));
+    save.setAttribute('aria-label', `${restaurant.name} 단골 목록에 추가`);
+    save.title = '로그인 후 단골 목록에 추가';
+    save.addEventListener('click', () => {
+      showNotice($('#toast'), '로그인 후 단골목록을 사용하세요');
+    });
     top.append(node('h2', restaurant.name), save);
     info.append(top, node('p', `${restaurant.district} · ${restaurant.category || '식당'}`, 'restaurant-meta'), node('p', restaurant.address, 'restaurant-address'));
     const tags = node('div', undefined, 'restaurant-tags');

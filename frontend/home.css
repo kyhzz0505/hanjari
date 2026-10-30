@@ -1,0 +1,32 @@
+/* 메인 아래 영역: 기존 한지 배경을 그대로 비추는 반투명 표면 */
+.header nav.account-nav button{display:block;white-space:nowrap}
+.home-section{margin-top:110px;padding-top:64px;border-top:1px solid #e3dfd6;scroll-margin-top:30px}
+.home-section h2{font-size:clamp(26px,2.8vw,40px);line-height:1.45;letter-spacing:-.045em;margin:0 0 14px;word-break:keep-all}
+.section-description{color:var(--muted);font-size:17px;line-height:1.8;margin:0 0 32px;word-break:keep-all}
+.occasion-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px}
+.occasion-card{display:flex;flex-direction:column;align-items:start;padding:28px;border:1px solid #e5e0d7;border-radius:24px;background:rgb(255 255 255 / 48%);transition:background .2s,transform .2s}
+.occasion-card:hover{background:rgb(255 255 255 / 80%);transform:translateY(-4px)}
+.occasion-icon{display:grid;place-items:center;width:48px;height:48px;background:#eeece6;border-radius:15px;margin-bottom:24px}
+.occasion-icon svg{width:25px;height:25px;fill:none;stroke:var(--ink);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.occasion-card h3{font-size:21px;margin:0 0 12px;letter-spacing:-.04em}
+.occasion-card p{font-size:14px;color:var(--muted);line-height:1.8;margin:0 0 26px;word-break:keep-all}
+.occasion-card .occasion-link{margin-top:auto;font-size:14px;font-weight:750}
+.home-section-heading{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-bottom:8px}
+.home-section-heading>a{font-weight:700;font-size:14px;white-space:nowrap}
+.featured-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:26px}
+.featured-card{border:0;background:transparent;text-align:left;padding:0;min-width:0;border-radius:20px}
+.featured-card img,.featured-card .image-placeholder{width:100%;height:clamp(180px,20vw,290px);object-fit:cover;border-radius:20px;background:#efede7;transition:filter .2s}
+.featured-card:hover img{filter:brightness(.94)}
+.featured-card h3{margin:20px 0 8px;font-size:21px;letter-spacing:-.035em}
+.featured-card p{font-size:14px;color:var(--muted);margin:0 0 14px}
+.featured-tags{display:flex;gap:7px;flex-wrap:wrap}
+.featured-tags span{font-size:12px;padding:7px 10px;border-radius:8px;background:#eeece6;color:#555d65}
+.featured-status{color:var(--muted);line-height:1.8;padding:24px 0}
+.featured-retry{border:1px solid #dcd7ce;border-radius:10px;background:#f4f1ea;padding:11px 20px;margin-top:12px}
+.site-footer{margin-top:95px;border-top:1px solid #e0dbd1;background:rgb(230 224 211 / 22%);padding:45px 0}
+.footer-inner{width:86%;max-width:1416px;margin:auto;display:flex;align-items:start;justify-content:space-between;gap:28px}
+.footer-brand{font-size:18px;font-weight:800}.footer-inner p{font-size:13px;color:var(--muted);line-height:1.8;margin:10px 0 0}
+.footer-links{display:flex;gap:23px;flex-wrap:wrap}.footer-links button{padding:0;border:0;background:none;color:var(--muted);font-size:13px;font-weight:650}
+.service-copy{line-height:1.9;color:var(--muted)}
+@media(max-width:1000px){.occasion-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.occasion-card{padding:25px}.featured-grid{gap:18px}.featured-card h3{font-size:18px}}
+@media(max-width:600px){.home-section{margin-top:70px;padding-top:40px}.section-description{font-size:14px}.occasion-grid{gap:12px}.occasion-card{padding:20px 16px;border-radius:18px}.occasion-card h3{font-size:17px}.occasion-card p{font-size:13px}.featured-grid{grid-template-columns:1fr;gap:30px}.featured-card img,.featured-card .image-placeholder{height:240px}.footer-inner{width:90%;flex-direction:column}.footer-links{gap:16px}.site-footer{margin-top:45px}.home-section-heading>a{font-size:12px}}

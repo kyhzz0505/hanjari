@@ -5,9 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="실제 좌석 정보와 사진으로 찾는 단체 모임 식당, 한자리.">
   <title>한자리 — 우리 모임이 함께 앉을 곳</title>
-  <link rel="stylesheet" href="style.css?v=notice-fade-4">
+  <link rel="stylesheet" href="style.css?v=logo-blend-20261030">
   <script src="shared.js?v=results-2" defer></script>
-  <script src="script.js?v=results-1" defer></script>
+  <script src="script.js?v=account-nav-1" defer></script>
+  <link rel="stylesheet" href="home.css?v=account-nav-1">
+  <script src="home.js?v=1" defer></script>
+  <link rel="stylesheet" href="account.css?v=1">
 </head>
 <body>
   <svg class="icon-library" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -20,13 +23,8 @@
   </svg>
   <header class="header">
     <div class="header-inner">
-      <a class="brand" href="index.html" aria-label="한자리 홈"><img src="assets/hanjari-brand.png" alt="한자리"></a>
-      <nav aria-label="주 메뉴">
-        <a href="#search-panel">자리 찾기</a>
-        <button type="button" id="nav-ai">모임별 추천</button>
-        <button type="button" data-notice="저장한 곳 기능은 준비 중이에요.">저장한 곳</button>
-        <button type="button" class="login" data-notice="로그인 기능은 준비 중이에요. 로그인 없이 식당을 검색할 수 있어요.">로그인</button>
-      </nav>
+      <a class="brand" href="index.html" aria-label="한자리 홈"><img src="assets/hanjari-logo-transparent.png" alt="한자리"></a>
+      <nav class="account-nav" aria-label="주 메뉴"><a href="mypage.html">마이페이지</a><a class="login" href="login.html">로그인</a></nav>
     </div>
   </header>
   <main class="container">
@@ -47,14 +45,14 @@
             <button type="button" class="field dropdown-trigger" role="combobox" aria-expanded="false" aria-haspopup="listbox" aria-controls="district-options" aria-labelledby="district-label district-value">
               <svg class="icon"><use href="#pin"/></svg><span class="field-body"><span class="field-label" id="district-label">지역</span><span class="selected-value" id="district-value">마포구</span></span><span class="chevron" aria-hidden="true"></span>
             </button>
-            <div class="dropdown-menu" hidden><p class="dropdown-caption">현재 마포구 식당을 안내해요</p><ul id="district-options" role="listbox" aria-label="지역 선택"></ul></div>
+            <div class="dropdown-menu" hidden><p class="dropdown-caption">검색할 지역을 선택해 주세요</p><ul id="district-options" role="listbox" aria-label="지역 선택"></ul></div>
           </div>
           <div class="dropdown" data-dropdown="people">
             <input type="hidden" id="people" name="people" value="8">
             <button type="button" class="field dropdown-trigger" role="combobox" aria-expanded="false" aria-haspopup="listbox" aria-controls="people-options" aria-labelledby="people-label people-value">
               <svg class="icon"><use href="#person"/></svg><span class="field-body"><span class="field-label" id="people-label">인원</span><span class="selected-value" id="people-value">8명</span></span><span class="chevron" aria-hidden="true"></span>
             </button>
-            <div class="dropdown-menu" hidden><p class="dropdown-caption">함께할 인원을 선택해 주세요</p><ul id="people-options" role="listbox" aria-label="방문 인원 선택, 1명부터 20명"></ul></div>
+            <div class="dropdown-menu" hidden><p class="dropdown-caption">함께할 인원을 선택해 주세요</p><ul id="people-options" role="listbox" aria-label="방문 인원 선택, 1명부터 50명"></ul></div>
           </div>
           <label class="field room-field"><svg class="icon"><use href="#bookmark"/></svg><span>룸 필요</span><input id="room" type="checkbox" role="switch" checked><span class="switch" aria-hidden="true"></span></label>
           <button class="submit" type="submit"><span>식당 찾기</span><svg class="icon"><use href="#arrow"/></svg></button>
@@ -68,7 +66,47 @@
         <p class="ai-hint">마포구 식당의 실제 좌석 정보를 바탕으로 안내해요. 최대 200자</p>
       </div>
     </section>
+    <section class="home-section" id="occasions" aria-labelledby="occasions-title">
+      <h2 id="occasions-title">모임에 맞는 자리를<br>먼저 골라봤어요</h2>
+      <p class="section-description">모임 성격에 맞는 자리부터 둘러보세요.</p>
+      <div class="occasion-grid">
+        <a class="occasion-card" href="results.html?district=마포구&amp;type=CONNECTED">
+          <span class="occasion-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="7" width="18" height="14" rx="3"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 12h18M10 12v3h4v-3"/></svg></span>
+          <h3>회식</h3><p>이야기를 함께 나누기 좋은 연결 단체석</p><span class="occasion-link">자리 보기 →</span>
+        </a>
+        <a class="occasion-card" href="results.html?district=마포구&amp;type=CONNECTED&amp;sort=capacity">
+          <span class="occasion-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="7" r="3"/><path d="M2 21v-3a7 6 0 0 1 14 0v3M16 4a3 3 0 0 1 0 6M18 13a6 6 0 0 1 4 6v2"/></svg></span>
+          <h3>동창회·동호회</h3><p>여럿이 함께 앉을 수 있는 넉넉한 단체석</p><span class="occasion-link">자리 보기 →</span>
+        </a>
+        <a class="occasion-card" href="results.html?district=마포구&amp;room=true">
+          <span class="occasion-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m2 11 10-8 10 8M5 9v12h14V9M9 21v-8h6v8"/></svg></span>
+          <h3>가족 모임</h3><p>가족이 둘러앉을 수 있는 룸이 있는 식당</p><span class="occasion-link">자리 보기 →</span>
+        </a>
+        <a class="occasion-card" href="results.html?district=마포구&amp;room=true">
+          <span class="occasion-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="12" width="16" height="9" rx="2"/><path d="M4 16h16M12 12V8M12 8c-4-1-3-4 0-6 3 2 4 5 0 6"/></svg></span>
+          <h3>생일·기념일</h3><p>소중한 날 함께할 룸 좌석을 살펴보세요</p><span class="occasion-link">자리 보기 →</span>
+        </a>
+      </div>
+    </section>
+    <section class="home-section" id="featured" aria-labelledby="featured-title">
+      <div class="home-section-heading"><h2 id="featured-title">함께 앉기 좋은 자리</h2><a href="results.html?district=마포구">전체 보기 →</a></div>
+      <p class="section-description">직접 확인한 식당의 좌석과 사진을 만나보세요.</p>
+      <div id="featured-grid" class="featured-grid" aria-busy="true"></div>
+      <p id="featured-state" class="featured-status" role="status">등록된 식당을 불러오고 있어요.</p>
+      <button id="featured-retry" class="featured-retry" type="button" hidden>다시 불러오기</button>
+    </section>
   </main>
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div><a class="footer-brand" href="index.html">한자리</a><p>우리 모임이 함께 앉을 곳</p></div>
+      <nav class="footer-links" aria-label="서비스 안내">
+        <button id="service-intro" type="button">서비스 소개</button>
+        <button type="button" data-notice="식당 입점 문의 창구는 준비 중이에요.">식당 입점 문의</button>
+        <button type="button" data-notice="이용약관은 준비 중이에요.">이용약관</button>
+        <button type="button" data-notice="개인정보처리방침은 준비 중이에요.">개인정보처리방침</button>
+      </nav>
+    </div>
+  </footer>
   <dialog id="detail-dialog" aria-labelledby="detail-title"><button id="close-detail" class="close" aria-label="상세 닫기">×</button><div id="detail-content"></div></dialog>
   <div id="notifications" aria-label="안내 메시지">
     <div id="toast" class="toast" role="status" hidden></div>
