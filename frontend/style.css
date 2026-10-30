@@ -144,3 +144,12 @@
 @media (prefers-reduced-motion: reduce) {
   #toast.notice-fading, #status.notice-fading { animation: none; opacity: 0; }
 }
+
+/* 투명 로고를 자르지 않고 공통 한지 배경 위에 표시합니다. */
+.header { background: transparent; }
+.brand { width: 188px; height: 64px; display: flex; align-items: center; overflow: visible; mix-blend-mode: normal; }
+.brand img { position: static; width: 100%; height: 100%; max-width: 100%; object-fit: contain; object-position: left center; }
+@media (max-width: 600px) {
+  .brand { width: 150px; height: 52px; }
+  .brand img { position: static; width: 100%; height: 100%; }
+}

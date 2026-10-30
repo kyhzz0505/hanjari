@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>로그인 — 한자리</title>
+  <link rel="stylesheet" href="style.css?v=logo-blend-20261030">
+  <link rel="stylesheet" href="account.css?v=1">
+  <link rel="stylesheet" href="login.css?v=1">
+  <script src="login.js?v=favorites-1" defer></script>
+</head>
+<body>
+  <header class="header"><div class="header-inner">
+    <a class="brand" href="index.html" aria-label="한자리 홈"><img src="assets/hanjari-logo-transparent.png" alt="한자리"></a>
+    <nav class="account-nav" aria-label="주 메뉴"><a href="mypage.html">마이페이지</a><a class="login" href="login.html" aria-current="page">로그인</a></nav>
+  </div></header>
+  <main class="login-main">
+    <section class="login-card" aria-labelledby="login-title">
+      <h1 id="login-title">다시 만나 반가워요</h1>
+      <p class="login-subtitle">우리 모임이 함께 앉을 곳, 한자리</p>
+      <p id="login-required" class="login-required" hidden>마이페이지를 이용하려면 로그인이 필요해요.</p>
+      <form id="login-form" method="post">
+        <div class="login-field"><label for="email">이메일</label><input id="email" type="email" autocomplete="username" placeholder="이메일을 입력해 주세요" required maxlength="254"></div>
+        <div class="login-field"><label for="password">비밀번호</label><div class="password-field"><input id="password" type="password" autocomplete="current-password" placeholder="비밀번호를 입력해 주세요" required><button id="toggle-password" type="button" aria-label="비밀번호 보기" aria-pressed="false" aria-controls="password"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/><path id="eye-slash" d="m3 3 18 18" style="display:none"/></svg></button></div></div>
+        <div class="login-options"><label class="remember"><input id="remember" type="checkbox">로그인 상태 유지</label><button class="text-link" type="button" data-login-notice="비밀번호 찾기는 준비 중이에요.">비밀번호 찾기</button></div>
+        <button class="login-submit" id="login-submit" type="submit" disabled>로그인</button>
+        <p id="login-feedback" class="login-feedback" role="status" hidden></p>
+        <noscript><p>로그인 화면을 이용하려면 브라우저의 JavaScript를 켜 주세요.</p></noscript>
+      </form>
+      <div class="signup-line"><span>아직 한자리 회원이 아니신가요?</span><button type="button" class="text-link" data-login-notice="회원가입은 준비 중이에요.">회원가입</button></div>
+    </section>
+    <a class="browse-link" href="index.html">← &nbsp; 식당 먼저 둘러보기</a>
+  </main>
+  <div id="notifications"><div id="toast" class="toast" role="status" hidden></div></div>
+</body>
+</html>

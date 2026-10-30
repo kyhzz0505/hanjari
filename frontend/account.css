@@ -1,0 +1,4 @@
+.header nav.account-nav{display:flex;align-items:center;gap:30px}
+.header nav.account-nav a{display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;padding:10px 0}
+.header nav.account-nav a.login{padding:15px 23px;background:#f0f1f3;border-radius:16px}
+@media(max-width:600px){.header nav.account-nav{gap:16px}.header nav.account-nav a.login{padding:10px 12px}}

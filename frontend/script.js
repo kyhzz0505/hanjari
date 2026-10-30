@@ -75,17 +75,23 @@ function createDropdown(name, choices) {
   dropdowns.push({ wrapper, close });
 }
 
+const DISTRICTS = ['마포구', '서대문구', '용산구', '영등포구'];
+const MAX_PEOPLE = 50;
 const initial = new URLSearchParams(location.search);
+if (DISTRICTS.includes(initial.get('district'))) {
+  $('#district').value = initial.get('district');
+  $('#district-value').textContent = initial.get('district');
+}
 const initialPeople = Number(initial.get('people'));
-if (Number.isInteger(initialPeople) && initialPeople >= 1 && initialPeople <= 20) {
+if (Number.isInteger(initialPeople) && initialPeople >= 1 && initialPeople <= MAX_PEOPLE) {
   $('#people').value = String(initialPeople);
   $('#people-value').textContent = initialPeople + '명';
 }
 if (initial.has('room')) $('#room').checked = initial.get('room') === 'true';
 if (initial.has('query')) $('#query').value = initial.get('query').slice(0, 200);
 
-createDropdown('district', [{ value: '마포구', label: '마포구' }]);
-createDropdown('people', Array.from({ length: 20 }, (_, i) => ({ value: String(i + 1), label: `${i + 1}명` })));
+createDropdown('district', DISTRICTS.map(name => ({ value: name, label: name })));
+createDropdown('people', Array.from({ length: MAX_PEOPLE }, (_, i) => ({ value: String(i + 1), label: `${i + 1}명` })));
 document.addEventListener('pointerdown', event => {
   dropdowns.forEach(dropdown => { if (!dropdown.wrapper.contains(event.target)) dropdown.close(); });
 });
@@ -107,10 +113,6 @@ tabs.forEach((tab, i) => {
       activateTab(event.key === 'Home' ? 0 : event.key === 'End' ? 1 : 1 - i, true);
     }
   });
-});
-$('#nav-ai').addEventListener('click', () => {
-  activateTab(1);
-  $('#query').focus();
 });
 
 if (initial.get('mode') === 'ai') activateTab(1);
