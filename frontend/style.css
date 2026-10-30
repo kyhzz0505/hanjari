@@ -23,6 +23,8 @@
 .dropdown-menu [aria-selected=true]{background:var(--ink);color:white;font-weight:700}
 .dropdown-menu [aria-selected=true]::after{content:'✓';position:absolute;right:12px}
 .dropdown-menu [aria-selected=true]:hover{background:#303c49}
+.dropdown-menu [aria-disabled=true]{color:#99958e;cursor:default}
+.dropdown-menu [aria-disabled=true]:hover{background:transparent}
 
 /* 작은 화면에서도 검색 조건은 한 줄로 유지합니다. */
 .search-panel{width:100%;min-width:0;padding-inline:clamp(8px,1.6vw,26px)}
