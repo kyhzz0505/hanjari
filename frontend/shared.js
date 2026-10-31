@@ -1,5 +1,7 @@
 'use strict';
-const API_BASE = 'http://localhost:8080';
+// Live Server(5500)로 열면 백엔드(8080)를 따로 부르고,
+// 백엔드가 화면까지 함께 제공할 때(휴대폰·터널 접속)는 같은 주소의 API를 부릅니다.
+const API_BASE = location.port === '5500' ? 'http://localhost:8080' : '';
 const $ = selector => document.querySelector(selector);
 const status = $('#status');
 const noticeTimers = new WeakMap();
