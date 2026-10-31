@@ -12,7 +12,9 @@ USE hanjari;
 -- DB 기본 문자셋을 utf8mb4로 맞춥니다 (한글·이모지 저장용)
 ALTER DATABASE hanjari CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;
 
--- 참조 관계 역순으로 삭제 (사진 → 좌석 → 식당)
+-- 참조 관계 역순으로 삭제 (단골 → 회원, 사진 → 좌석 → 식당)
+DROP TABLE IF EXISTS favorites;
+DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS restaurant_images;
 DROP TABLE IF EXISTS seating;
 DROP TABLE IF EXISTS restaurants;
@@ -86,4 +88,34 @@ CREATE TABLE restaurant_images (
     CONSTRAINT fk_images_seating
         FOREIGN KEY (seating_id) REFERENCES seating (id) ON DELETE SET NULL,
     INDEX idx_images_restaurant (restaurant_id, sort_order)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+-- ---------------------------------------------------------------------
+-- users : 로그인 계정 (현재는 체험 계정 1개)
+-- ---------------------------------------------------------------------
+CREATE TABLE users (
+    id             BIGINT       NOT NULL AUTO_INCREMENT,
+    email          VARCHAR(254) NOT NULL,
+    password_hash  VARCHAR(255) NOT NULL,                -- pbkdf2$반복횟수$솔트$해시
+    display_name   VARCHAR(50)  NOT NULL,
+    created_at     DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    UNIQUE KEY uk_users_email (email)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- ---------------------------------------------------------------------
+-- favorites : 회원별 단골 식당
+-- ---------------------------------------------------------------------
+CREATE TABLE favorites (
+    id             BIGINT       NOT NULL AUTO_INCREMENT,
+    user_id        BIGINT       NOT NULL,
+    restaurant_id  BIGINT       NOT NULL,
+    created_at     DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    UNIQUE KEY uk_favorites_user_restaurant (user_id, restaurant_id),
+    CONSTRAINT fk_favorites_user
+        FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
+    CONSTRAINT fk_favorites_restaurant
+        FOREIGN KEY (restaurant_id) REFERENCES restaurants (id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;

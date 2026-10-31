@@ -2,6 +2,7 @@ package com.hanjari.backend.restaurant;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -27,7 +28,24 @@ public class RestaurantService {
         }
         // "district=" 처럼 값 없이 오면 지역 조건 없음으로 처리
         String districtOrNull = (district == null || district.isBlank()) ? null : district.trim();
-        List<Restaurant> restaurants = restaurantRepository.search(districtOrNull, people, room);
+        return toSummaries(restaurantRepository.search(districtOrNull, people, room));
+    }
+
+    // 단골 목록처럼 식당 id 목록이 정해져 있을 때. 주어진 순서를 지키고, 영업 중인 식당만 남긴다
+    public List<RestaurantSummaryResponse> findOpenSummaries(List<Long> restaurantIds) {
+        Map<Long, Restaurant> byId = restaurantRepository.findAllById(restaurantIds).stream()
+                .filter(restaurant -> restaurant.getStatus() == RestaurantStatus.OPEN)
+                .collect(Collectors.toMap(Restaurant::getId, restaurant -> restaurant));
+        return toSummaries(restaurantIds.stream().map(byId::get).filter(Objects::nonNull).toList());
+    }
+
+    // 영업 중인 식당이 아니면 404 (단골 추가 전 확인용)
+    public void requireOpenRestaurant(Long id) {
+        restaurantRepository.findByIdAndStatus(id, RestaurantStatus.OPEN)
+                .orElseThrow(RestaurantNotFoundException::new);
+    }
+
+    private List<RestaurantSummaryResponse> toSummaries(List<Restaurant> restaurants) {
         List<Long> ids = restaurants.stream().map(Restaurant::getId).toList();
 
         // 식당이 몇 곳이든 좌석·사진은 쿼리 한 번씩만 실행하고, 식당 id별로 묶는다

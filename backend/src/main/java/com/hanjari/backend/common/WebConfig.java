@@ -13,6 +13,8 @@ public class WebConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/api/**")
                 .allowedOrigins("http://127.0.0.1:5500", "http://localhost:5500")
-                .allowedMethods("GET", "POST");
+                .allowedMethods("GET", "POST", "PUT", "DELETE")
+                // 로그인 세션 쿠키(JSESSIONID)를 함께 보내도록 허용 (프론트는 credentials: 'include')
+                .allowCredentials(true);
     }
 }

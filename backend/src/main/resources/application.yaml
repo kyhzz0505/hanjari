@@ -23,6 +23,13 @@ spring:
 server:
   forward-headers-strategy: framework
 
+# 체험 계정 (회원가입 없음). 이메일·비밀번호는 루트 .env의 DEMO_EMAIL, DEMO_PASSWORD에서 읽는다
+# 값이 없으면 체험 계정 없이 시작한다 (로그인만 안 되고 나머지 기능은 그대로)
+demo:
+  email: ${DEMO_EMAIL:}
+  password: ${DEMO_PASSWORD:}
+  display-name: ${DEMO_NAME:체험 회원}
+
 # Gemini (AI 자연어 검색). 키는 루트 .env의 GEMINI_API_KEY에서 읽는다
 gemini:
   api-key: ${GEMINI_API_KEY:}

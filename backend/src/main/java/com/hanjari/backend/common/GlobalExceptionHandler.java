@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
+import com.hanjari.backend.auth.UnauthorizedException;
 import com.hanjari.backend.restaurant.RestaurantNotFoundException;
 
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +23,13 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(RestaurantNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleRestaurantNotFound(RestaurantNotFoundException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
+    // 로그인이 필요하거나 로그인에 실패한 경우
+    @ExceptionHandler(UnauthorizedException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ErrorResponse handleUnauthorized(UnauthorizedException e) {
         return new ErrorResponse(e.getMessage());
     }
 

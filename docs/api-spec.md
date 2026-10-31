@@ -161,6 +161,56 @@ Content-Type: application/json
 
 ---
 
+## 4. 로그인 (체험 계정)
+
+회원가입은 없습니다. **팀만 아는 체험 계정 1개**로만 로그인할 수 있습니다.
+체험 계정의 이메일·비밀번호는 각자 `.env`의 `DEMO_EMAIL`, `DEMO_PASSWORD`에 넣으며, 코드·커밋에는 넣지 않습니다.
+로그인 상태는 서버 세션 쿠키로 유지됩니다.
+
+### 프론트 연결 시 주의
+- 로그인 이후 모든 요청에 `fetch(url, { credentials: 'include' })`를 붙여야 쿠키가 함께 갑니다.
+- Live Server로 개발할 때는 화면 주소와 API 주소의 호스트를 맞춥니다: `127.0.0.1:5500` → `http://127.0.0.1:8080`
+  (`127.0.0.1`과 `localhost`는 서로 다른 사이트로 취급돼 쿠키가 전달되지 않습니다)
+
+### `POST /api/auth/login`
+```json
+{ "email": "체험 계정 이메일", "password": "체험 계정 비밀번호" }
+```
+- `200 OK`: `{ "email": "...", "displayName": "체험 회원" }`
+- `401 Unauthorized`: `{ "message": "이메일 또는 비밀번호가 올바르지 않습니다." }`
+- `400 Bad Request`: 이메일·비밀번호가 비어 있을 때 `{ "message": "이메일과 비밀번호를 입력해 주세요." }`
+
+### `GET /api/auth/me`
+현재 로그인 상태 확인
+- `200 OK`: `{ "email": "...", "displayName": "체험 회원" }`
+- `401 Unauthorized`: `{ "message": "로그인이 필요합니다." }`
+
+### `POST /api/auth/logout`
+- `204 No Content`
+
+---
+
+## 5. 단골 목록 (로그인 필요)
+
+로그인하지 않으면 모두 `401 { "message": "로그인이 필요합니다." }`
+
+### `GET /api/favorites`
+단골로 저장한 식당 목록. 최근에 추가한 순서. 형식은 1번 목록 API와 같습니다.
+영업 중이 아닌 식당은 빠집니다.
+
+### `PUT /api/favorites/{restaurantId}`
+단골에 추가. 이미 추가된 식당이면 그대로 둡니다.
+- `204 No Content`
+- `404 Not Found`: 없는 식당이거나 영업 중이 아닌 식당 `{ "message": "식당을 찾을 수 없습니다." }`
+
+### `DELETE /api/favorites/{restaurantId}`
+단골에서 삭제. 단골이 아니어도 그대로 성공합니다.
+- `204 No Content`
+
+체험 계정은 여러 사람이 함께 쓰므로, 한 사람이 추가한 단골이 다른 사람에게도 보입니다.
+
+---
+
 ## 프론트엔드 작업 팁
 백엔드 API가 완성되기 전에는 위 응답 예시를 `frontend/mock/` 폴더에 JSON 파일로 저장해서 화면을 먼저 만듭니다.
 API가 완성되면 `fetch` 주소만 `http://localhost:8080/api/...` 로 바꿉니다.
@@ -173,3 +223,4 @@ API가 완성되면 `fetch` 주소만 `http://localhost:8080/api/...` 로 바꿉
 | v0.3 | 2026-10-28 | AI 검색 구현: 결과 없음·지역 밖 안내 문장, 200자 제한, 응답 시간 안내 |
 | v0.4 | 2026-10-28 | 목록·검색: `people`가 1 미만이면 400 |
 | v0.5 | 2026-10-28 | `maxGroupCapacity`: 좌석 정보가 없으면 `null` 명시 |
+| v0.6 | 2026-10-31 | 체험 계정 로그인(4번), 단골 목록(5번) 추가 |
