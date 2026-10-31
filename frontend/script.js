@@ -90,7 +90,7 @@ if (Number.isInteger(initialPeople) && initialPeople >= 1 && initialPeople <= MA
 if (initial.has('room')) $('#room').checked = initial.get('room') === 'true';
 if (initial.has('query')) $('#query').value = initial.get('query').slice(0, 200);
 
-createDropdown('district', DISTRICTS.map(name => ({ value: name, label: name })));
+createRegionDropdown(DISTRICTS);
 createDropdown('people', Array.from({ length: MAX_PEOPLE }, (_, i) => ({ value: String(i + 1), label: `${i + 1}명` })));
 document.addEventListener('pointerdown', event => {
   dropdowns.forEach(dropdown => { if (!dropdown.wrapper.contains(event.target)) dropdown.close(); });
