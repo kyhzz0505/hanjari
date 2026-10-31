@@ -1,7 +1,8 @@
 'use strict';
 // Live Server(5500)로 열면 백엔드(8080)를 따로 부르고,
 // 백엔드가 화면까지 함께 제공할 때(휴대폰·터널 접속)는 같은 주소의 API를 부릅니다.
-const API_BASE = location.port === '5500' ? 'http://localhost:8080' : '';
+// 호스트(127.0.0.1 / localhost)를 화면과 맞춰야 로그인 쿠키가 함께 전달됩니다.
+const API_BASE = location.port === '5500' ? `http://${location.hostname}:8080` : '';
 const $ = selector => document.querySelector(selector);
 const status = $('#status');
 const noticeTimers = new WeakMap();
@@ -30,7 +31,9 @@ function showSearchNotice(message) {
 }
 
 async function request(path, options = {}) {
-  const response = await fetch(API_BASE + path, options);
+  // credentials: 로그인 세션 쿠키를 함께 보냅니다
+  const response = await fetch(API_BASE + path, { credentials: 'include', ...options });
+  if (response.status === 204) return null;
   const data = await response.json().catch(() => null);
   if (!response.ok) throw Object.assign(new Error(data?.message || `요청을 처리하지 못했어요. (${response.status})`), { status: response.status });
   if (data === null) throw new Error('서버 응답을 확인할 수 없어요. 다시 시도해 주세요.');
@@ -57,10 +60,57 @@ document.querySelectorAll('[data-notice]').forEach((button) => {
   });
 });
 
+// ── 로그인 (체험 계정) ──────────────────────────────────────────
+// 현재 로그인한 사용자. 로그인하지 않았으면 null. 한 페이지에서 한 번만 서버에 확인합니다.
+let currentUserRequest;
+function getCurrentUser() {
+  currentUserRequest ??= request('/api/auth/me').catch(() => null);
+  return currentUserRequest;
+}
+// 로그인 후 돌아올 페이지를 붙인 로그인 주소
+function loginUrl() {
+  const page = location.pathname.split('/').pop() || 'index.html';
+  return 'login.html?next=' + encodeURIComponent(page + location.search + location.hash);
+}
+async function logout() {
+  await request('/api/auth/logout', { method: 'POST' }).catch(() => null);
+  location.href = 'index.html';
+}
+// 로그인했으면 상단 메뉴의 "로그인"을 "로그아웃"으로 바꿉니다
+async function updateAccountNav() {
+  const loginLink = document.querySelector('.account-nav a.login');
+  if (!loginLink || !(await getCurrentUser())) return;
+  const logoutButton = node('button', '로그아웃', 'login');
+  logoutButton.type = 'button';
+  logoutButton.addEventListener('click', logout);
+  loginLink.replaceWith(logoutButton);
+}
+updateAccountNav();
+
+// ── 단골 목록 ──────────────────────────────────────────────────
+// 로그인한 사용자의 단골 식당 id 목록. 로그인하지 않았으면 빈 목록입니다.
+async function loadFavoriteIds() {
+  if (!(await getCurrentUser())) return new Set();
+  const favorites = await request('/api/favorites').catch(() => []);
+  return new Set(favorites.map(restaurant => restaurant.id));
+}
+// 단골 추가·삭제. 로그인하지 않았으면 로그인 화면으로 보냅니다.
+async function setFavorite(restaurantId, on) {
+  try {
+    await request(`/api/favorites/${encodeURIComponent(restaurantId)}`, { method: on ? 'PUT' : 'DELETE' });
+    return true;
+  } catch (error) {
+    if (error.status === 401) location.href = loginUrl();
+    else showNotice($('#toast'), on ? '단골에 추가하지 못했어요. 다시 시도해 주세요.' : '단골에서 빼지 못했어요. 다시 시도해 주세요.');
+    return false;
+  }
+}
+
+// 상세 보기 창은 이 창이 있는 페이지에서만 씁니다 (로그인 화면에는 없음)
 const dialog = $('#detail-dialog');
 let detailRequest;
-$('#close-detail').addEventListener('click', () => dialog.close());
-dialog.addEventListener('close', () => detailRequest?.abort());
+$('#close-detail')?.addEventListener('click', () => dialog.close());
+dialog?.addEventListener('close', () => detailRequest?.abort());
 async function showDetail(id) {
   detailRequest?.abort();
   const controller = new AbortController();

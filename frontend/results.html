@@ -6,8 +6,8 @@
   <title>검색 결과 — 한자리</title>
   <link rel="stylesheet" href="style.css?v=logo-blend-20261030">
   <link rel="stylesheet" href="results.css?v=1">
-  <script src="shared.js?v=results-2" defer></script>
-  <script src="results.js?v=favorites-notice-2" defer></script>
+  <script src="shared.js?v=auth-1" defer></script>
+  <script src="results.js?v=auth-1" defer></script>
   <link rel="stylesheet" href="account.css?v=1">
 </head>
 <body class="result-screen">
@@ -42,7 +42,7 @@
           <button type="button" data-sort="default" aria-pressed="true">기본순</button>
           <button type="button" data-notice="거리 정보가 없어 가까운 순 정렬은 아직 제공하지 않아요.">가까운 순</button>
           <button type="button" data-sort="capacity" aria-pressed="false">넓은 자리 순</button>
-          <button type="button" class="detail-link" data-notice="로그인 후 단골목록을 사용하세요">♡ 단골 목록</button><span id="result-count" aria-live="polite"></span>
+          <a class="detail-link" href="mypage.html#favorites">♡ 단골 목록</a><span id="result-count" aria-live="polite"></span>
         </div>
         <div id="result-state" class="result-state" role="status"><span class="loading-dot" aria-hidden="true"></span>식당과 좌석 정보를 확인하고 있어요.</div>
         <button type="button" id="retry" class="retry" hidden>다시 시도</button>

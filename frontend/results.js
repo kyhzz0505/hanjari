@@ -11,6 +11,8 @@ let loading = false;
 let controller;
 const names = { ROOM: '룸', TABLE: '일반 테이블', CONNECTED: '연결 단체석' };
 const list = $('#restaurant-list');
+// 로그인한 사용자의 단골 식당 id (로그인 안 했으면 비어 있음)
+let favoriteIds = new Set();
 
 function checkedTypes() { return [...document.querySelectorAll('input[name="seating"]:checked')].map(input => input.value); }
 function syncCheckboxes() { document.querySelectorAll('input[name="seating"]').forEach(input => { input.checked = appliedTypes.includes(input.value); }); }
@@ -62,12 +64,25 @@ function render() {
     photoButton.addEventListener('click', () => showDetail(restaurant.id));
     const info = node('div', undefined, 'restaurant-info');
     const top = node('div', undefined, 'restaurant-top');
-    const save = node('button', '♡', 'save-button');
+    const save = node('button', undefined, 'save-button');
     save.type = 'button';
-    save.setAttribute('aria-label', `${restaurant.name} 단골 목록에 추가`);
-    save.title = '로그인 후 단골 목록에 추가';
-    save.addEventListener('click', () => {
-      showNotice($('#toast'), '로그인 후 단골목록을 사용하세요');
+    // ♥: 단골에 있음, ♡: 없음. 누를 때마다 추가·삭제하고, 로그인 안 했으면 로그인 화면으로 갑니다
+    const showSaved = saved => {
+      save.textContent = saved ? '♥' : '♡';
+      save.setAttribute('aria-pressed', String(saved));
+      save.setAttribute('aria-label', `${restaurant.name} ${saved ? '단골에서 빼기' : '단골 목록에 추가'}`);
+      save.title = saved ? '단골에서 빼기' : '단골 목록에 추가';
+    };
+    showSaved(favoriteIds.has(restaurant.id));
+    save.addEventListener('click', async () => {
+      const next = !favoriteIds.has(restaurant.id);
+      save.disabled = true;
+      if (await setFavorite(restaurant.id, next)) {
+        if (next) favoriteIds.add(restaurant.id); else favoriteIds.delete(restaurant.id);
+        showSaved(next);
+        showNotice($('#toast'), next ? `${restaurant.name}을(를) 단골에 추가했어요.` : `${restaurant.name}을(를) 단골에서 뺐어요.`);
+      }
+      save.disabled = false;
     });
     top.append(node('h2', restaurant.name), save);
     info.append(top, node('p', `${restaurant.district} · ${restaurant.category || '식당'}`, 'restaurant-meta'), node('p', restaurant.address, 'restaurant-address'));
@@ -133,7 +148,10 @@ async function load() {
       $('#ai-explanation').hidden = true;
     }
     // 현재 조사된 소규모 목록의 상세 좌석을 확인해 인원과 좌석 종류를 함께 검증합니다.
-    restaurants = await Promise.all(summaries.map(async restaurant => ({ ...restaurant, detail: await request(`/api/restaurants/${encodeURIComponent(restaurant.id)}`, { signal }) })));
+    [restaurants, favoriteIds] = await Promise.all([
+      Promise.all(summaries.map(async restaurant => ({ ...restaurant, detail: await request(`/api/restaurants/${encodeURIComponent(restaurant.id)}`, { signal }) }))),
+      loadFavoriteIds()
+    ]);
     syncCheckboxes();
     render();
     writeLocation();
