@@ -12,6 +12,17 @@ spring:
       ddl-auto: validate
     show-sql: true
 
+  # 프론트 화면(frontend/)도 백엔드 주소(8080) 하나로 함께 제공한다 → 휴대폰·임시 터널로 보여 줄 때 사용
+  # VS Code F5는 프로젝트 폴더에서(./frontend), Gradle bootRun은 backend 폴더에서(../frontend) 실행된다
+  web:
+    resources:
+      static-locations: classpath:/static/, file:./frontend/, file:../frontend/
+
+# 임시 터널(cloudflared)을 거쳐 https로 접속할 때, 터널이 알려 주는 원래 주소(X-Forwarded-*)를 사용한다.
+# 이게 없으면 휴대폰의 POST 요청(AI 검색)이 다른 사이트 요청으로 판단돼 CORS 403이 난다.
+server:
+  forward-headers-strategy: framework
+
 # Gemini (AI 자연어 검색). 키는 루트 .env의 GEMINI_API_KEY에서 읽는다
 gemini:
   api-key: ${GEMINI_API_KEY:}
