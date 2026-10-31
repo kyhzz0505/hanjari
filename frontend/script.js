@@ -98,9 +98,8 @@ if (Number.isInteger(initialPeople) && initialPeople >= 1 && initialPeople <= MA
 if (initial.has('room')) $('#room').checked = initial.get('room') === 'true';
 if (initial.has('query')) $('#query').value = initial.get('query').slice(0, 200);
 
-createDropdown('district', DISTRICTS.map(name => OPEN_DISTRICTS.includes(name)
-  ? { value: name, label: name }
-  : { value: name, label: `${name} (준비 중)`, disabled: true, notice: `${name} 식당은 준비 중이에요. 지금은 마포구 식당을 안내해요.` }));
+// 시·도 → 구 2단계 선택. 식당 데이터가 있는 구(OPEN_DISTRICTS)만 고를 수 있고 나머지는 "준비 중"으로 표시합니다.
+createRegionDropdown(DISTRICTS, OPEN_DISTRICTS);
 createDropdown('people', Array.from({ length: MAX_PEOPLE }, (_, i) => ({ value: String(i + 1), label: `${i + 1}명` })));
 document.addEventListener('pointerdown', event => {
   dropdowns.forEach(dropdown => { if (!dropdown.wrapper.contains(event.target)) dropdown.close(); });

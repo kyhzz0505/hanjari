@@ -1,0 +1,11 @@
+.dropdown-menu.region-menu{width:290px;min-width:0;max-width:calc(100vw - 40px);padding:16px;border-radius:18px;background:#faf8f3}
+.region-heading{font-size:13px;font-weight:650;color:var(--muted);margin:0 0 12px}
+.region-cities{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;padding-bottom:14px;border-bottom:1px solid #e2dfd8}
+.region-cities button,.region-districts button{border:1px solid #e1ded7;border-radius:10px;padding:11px 8px;font-size:14px;line-height:1.4;background:#f0eee8;color:var(--ink)}
+.region-cities button[aria-pressed=true],.region-districts button[aria-pressed=true]{background:var(--ink);color:#fff;border-color:var(--ink);font-weight:700}
+.region-cities button:hover,.region-districts button:hover{box-shadow:0 0 0 1px #9b8c75}
+.region-menu .dropdown-caption{margin:13px 0;line-height:1.7}
+.region-districts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;max-height:230px;overflow-y:auto}
+.region-districts:empty{display:none}
+.region-districts button[aria-disabled=true]{color:#99958e;background:transparent;border-style:dashed;cursor:default}
+.region-districts button[aria-disabled=true]:hover{box-shadow:none}
