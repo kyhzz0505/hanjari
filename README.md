@@ -57,15 +57,20 @@ MySQL Workbench에서 실행합니다.
 
 `sample_data.sql`은 테스트용 가상 데이터입니다. `real_data.sql`과 id가 겹치므로 **둘 중 하나만** 넣습니다.
 
+이미 식당 데이터가 들어 있는 DB에 로그인·단골 테이블만 추가하려면 `database/auth_tables.sql`만 실행합니다(기존 데이터 유지).
+
 ### 2. 환경변수 (`.env`)
 프로젝트 맨 위 폴더에 `.env` 파일을 만듭니다. **이 파일은 Git에 올리지 않습니다.**
 
 ```
 DB_PASSWORD=MySQL비밀번호
 GEMINI_API_KEY=Gemini_API_키
+DEMO_EMAIL=체험계정이메일
+DEMO_PASSWORD=체험계정비밀번호
 ```
 
 - 줄 앞에 공백을 넣지 않습니다.
+- `DEMO_EMAIL`·`DEMO_PASSWORD`는 팀만 아는 체험 계정입니다(팀원끼리 따로 공유). 서버를 켤 때 이 값으로 계정을 만들고, DB에는 비밀번호 해시만 저장합니다. `.env`를 바꾼 뒤에는 서버를 **완전히 껐다가** 다시 켭니다.
 - 선택: `DB_USERNAME`(기본 `root`), `GEMINI_MODEL`(기본 `gemini-3.5-flash-lite`)
 - Gemini 키는 [Google AI Studio](https://aistudio.google.com)에서 발급합니다. 키가 없어도 서버는 실행되며, AI 검색만 추천 설명 없이 일반 검색 결과로 응답합니다.
 
