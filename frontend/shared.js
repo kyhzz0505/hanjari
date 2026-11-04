@@ -106,11 +106,83 @@ async function setFavorite(restaurantId, on) {
   }
 }
 
+// 상세 팝업 위에 사진만 확대합니다. 닫으면 원래 사진과 스크롤 위치로 돌아갑니다.
+let photoViewer;
+function openPhotoViewer(images, selectedImage, trigger) {
+  const photos = images.filter(image => image.imageUrl?.startsWith('/images/'));
+  let index = photos.indexOf(selectedImage);
+  if (index < 0) return;
+  if (!photoViewer) {
+    photoViewer = node('dialog', undefined, 'photo-viewer');
+    photoViewer.setAttribute('aria-label', '좌석 사진 확대 보기');
+    document.body.append(photoViewer);
+    photoViewer.addEventListener('click', event => {
+      const bounds = photoViewer.getBoundingClientRect();
+      if (event.target === photoViewer && (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom)) photoViewer.close();
+    });
+  }
+  if (photoViewer.open) return;
+  const close = node('button', '×', 'photo-viewer-close');
+  close.type = 'button';
+  close.setAttribute('aria-label', '확대 사진 닫기');
+  close.autofocus = true;
+  close.addEventListener('click', () => photoViewer.close());
+  const title = node('p', undefined, 'photo-viewer-caption');
+  title.setAttribute('aria-live', 'polite');
+  title.setAttribute('aria-atomic', 'true');
+  const frame = node('div', undefined, 'photo-viewer-frame');
+  function renderPhoto() {
+    const current = photos[index];
+    title.textContent = `${index + 1} / ${photos.length} · ${current.caption || '좌석 사진'}`;
+    const message = node('p', '사진을 불러오고 있어요.', 'photo-viewer-message');
+    message.setAttribute('role', 'status');
+    const largeImage = node('img');
+    largeImage.alt = current.caption || '좌석 사진';
+    largeImage.hidden = true;
+    largeImage.addEventListener('load', () => { largeImage.hidden = false; message.hidden = true; }, { once: true });
+    largeImage.addEventListener('error', () => { message.textContent = '사진을 불러오지 못했어요. 다른 사진을 선택하거나 다시 시도해 주세요.'; }, { once: true });
+    largeImage.src = API_BASE + current.imageUrl;
+    frame.replaceChildren(largeImage, message);
+  }
+  function movePhoto(direction) {
+    if (photos.length < 2) return;
+    index = (index + direction + photos.length) % photos.length;
+    renderPhoto();
+  }
+  const previous = node('button', '‹', 'photo-viewer-nav photo-viewer-prev');
+  const next = node('button', '›', 'photo-viewer-nav photo-viewer-next');
+  previous.type = next.type = 'button';
+  previous.setAttribute('aria-label', '이전 사진');
+  next.setAttribute('aria-label', '다음 사진');
+  previous.hidden = next.hidden = photos.length < 2;
+  previous.addEventListener('click', () => movePhoto(-1));
+  next.addEventListener('click', () => movePhoto(1));
+  function handlePhotoKey(event) {
+    if (event.altKey || event.ctrlKey || event.metaKey) return;
+    if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+      event.preventDefault();
+      event.stopPropagation();
+      movePhoto(event.key === 'ArrowLeft' ? -1 : 1);
+    }
+  }
+  photoViewer.addEventListener('keydown', handlePhotoKey);
+  photoViewer.replaceChildren(close, frame, previous, next, title);
+  renderPhoto();
+  const previousOverflow = document.body.style.overflow;
+  document.body.style.overflow = 'hidden';
+  photoViewer.addEventListener('close', () => {
+    photoViewer.removeEventListener('keydown', handlePhotoKey);
+    document.body.style.overflow = previousOverflow;
+    if (trigger.isConnected) trigger.focus({ preventScroll: true });
+  }, { once: true });
+  photoViewer.showModal();
+}
+
 // 상세 보기 창은 이 창이 있는 페이지에서만 씁니다 (로그인 화면에는 없음)
 const dialog = $('#detail-dialog');
 let detailRequest;
 $('#close-detail')?.addEventListener('click', () => dialog.close());
-dialog?.addEventListener('close', () => detailRequest?.abort());
+dialog?.addEventListener('close', () => { detailRequest?.abort(); if (photoViewer?.open) photoViewer.close(); });
 async function showDetail(id) {
   detailRequest?.abort();
   const controller = new AbortController();
@@ -137,7 +209,20 @@ async function showDetail(id) {
     const gallery = node('div', undefined, 'gallery');
     data.images.forEach(image => {
       const figure = node('figure');
-      figure.append(photo(image.imageUrl, image.caption || data.name), node('figcaption', image.caption || '식당 사진'));
+      const thumbnail = photo(image.imageUrl, image.caption || data.name);
+      if (thumbnail.tagName === 'IMG') {
+        const zoom = node('button', undefined, 'photo-zoom-trigger');
+        zoom.type = 'button';
+        zoom.setAttribute('aria-label', `${image.caption || data.name} 크게 보기`);
+        zoom.setAttribute('aria-haspopup', 'dialog');
+        const hint = node('span', '크게 보기', 'photo-zoom-hint');
+        hint.setAttribute('aria-hidden', 'true');
+        zoom.append(thumbnail, hint);
+        thumbnail.addEventListener('error', () => { zoom.disabled = true; hint.hidden = true; }, { once: true });
+        zoom.addEventListener('click', () => openPhotoViewer(data.images, image, zoom));
+        figure.append(zoom);
+      } else figure.append(thumbnail);
+      figure.append(node('figcaption', image.caption || '식당 사진'));
       gallery.append(figure);
     });
     content.append(gallery, node('p', '좌석 구성 안내이며 실시간 빈자리나 예약 가능 여부를 뜻하지 않습니다.'));
