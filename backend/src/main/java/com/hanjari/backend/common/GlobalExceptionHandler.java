@@ -1,6 +1,8 @@
 package com.hanjari.backend.common;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -38,6 +40,15 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleBadRequest(BadRequestException e) {
         return new ErrorResponse(e.getMessage());
+    }
+
+    // 같은 접속지에서 요청이 너무 많은 경우 (로그인 실패 반복, AI 검색 반복)
+    // Retry-After 헤더로 몇 초 뒤에 다시 시도할 수 있는지 알려 준다
+    @ExceptionHandler(TooManyRequestsException.class)
+    public ResponseEntity<ErrorResponse> handleTooManyRequests(TooManyRequestsException e) {
+        return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
+                .header(HttpHeaders.RETRY_AFTER, String.valueOf(e.getRetryAfterSeconds()))
+                .body(new ErrorResponse(e.getMessage()));
     }
 
     // 숫자 자리에 글자가 온 경우 (예: /api/restaurants/abc, ?people=abc)
