@@ -160,6 +160,11 @@ async function load() {
     controller.abort();
     restaurants = [];
     // 인원처럼 입력이 잘못된 경우(400 등)는 다시 시도해도 같으므로, 연결 안내 대신 조건을 바꾸도록 안내합니다.
+    // AI 검색은 로그인한 사람만 쓸 수 있습니다 (로그인하지 않았으면 서버가 401). 로그인 화면으로 보내고, 로그인 후 이 검색으로 돌아옵니다.
+    if (error.status === 401) {
+      location.replace(loginUrl());
+      return;
+    }
     const inputError = error.inputError || (error.status >= 400 && error.status < 500);
     if (inputError) {
       $('#result-title').textContent = '검색 조건을 확인해 주세요';
