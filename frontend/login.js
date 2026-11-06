@@ -11,7 +11,9 @@ loginRequired.textContent = isFavorites
   ? '단골 목록은 로그인 후 사용할 수 있어요. 로그인하면 마음에 드는 식당을 모아볼 수 있어요.'
   : nextPage.startsWith('mypage.html')
     ? '마이페이지를 이용하려면 로그인이 필요해요.'
-    : '단골에 추가하려면 로그인이 필요해요.';
+    : nextPage.startsWith('results.html') && new URLSearchParams(nextPage.split('?')[1]).has('query')
+      ? 'AI에게 물어보기는 로그인 후 사용할 수 있어요.'
+      : '단골에 추가하려면 로그인이 필요해요.';
 toggle.addEventListener('click', () => {
   const visible = password.type === 'password';
   password.type = visible ? 'text' : 'password';

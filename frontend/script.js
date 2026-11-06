@@ -125,7 +125,7 @@ tabs.forEach((tab, i) => {
 });
 
 if (initial.get('mode') === 'ai') activateTab(1);
-function startSearch(isAi) {
+async function startSearch(isAi) {
   const params = new URLSearchParams();
   if (isAi) {
     const query = $('#query').value.trim();
@@ -136,7 +136,13 @@ function startSearch(isAi) {
     params.set('people', $('#people').value);
     params.set('room', String($('#room').checked));
   }
-  location.href = 'results.html?' + params;
+  const resultsPage = 'results.html?' + params;
+  // AI 검색은 로그인한 사람만 쓸 수 있습니다. 로그인하지 않았으면 로그인 화면으로 보내고, 로그인 후 바로 검색 결과로 돌아옵니다.
+  if (isAi && !(await getCurrentUser())) {
+    location.href = 'login.html?next=' + encodeURIComponent(resultsPage);
+    return;
+  }
+  location.href = resultsPage;
 }
 $('#condition-form').addEventListener('submit', event => { event.preventDefault(); startSearch(false); });
 $('#ai-form').addEventListener('submit', event => { event.preventDefault(); startSearch(true); });
